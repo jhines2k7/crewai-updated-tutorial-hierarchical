@@ -1,5 +1,5 @@
 from crewai import Crew, Process
-from langchain_openai import ChatOpenAI
+from langchain_anthropic import ChatAnthropic
 from agents import AINewsLetterAgents
 from tasks import AINewsLetterTasks
 from file_io import save_markdown
@@ -11,11 +11,9 @@ load_dotenv()
 agents = AINewsLetterAgents()
 tasks = AINewsLetterTasks()
 
-# Initialize the OpenAI GPT-4 language model
-OpenAIGPT4 = ChatOpenAI(
-    model="gpt-4"
+llm = ChatAnthropic(
+    model="claude-3-opus-20240229"
 )
-
 
 # Instantiate the agents
 editor = agents.editor_agent()
@@ -34,7 +32,7 @@ crew = Crew(
     agents=[editor, news_fetcher, news_analyzer, newsletter_compiler],
     tasks=[fetch_news_task, analyze_news_task, compile_newsletter_task],
     process=Process.hierarchical,
-    manager_llm=OpenAIGPT4,
+    manager_llm=llm,
     verbose=2
 )
 
